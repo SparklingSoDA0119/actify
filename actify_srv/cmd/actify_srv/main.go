@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"actify_srv/internal/db"
+	"actify_srv/internal/rest"
 	"actify_srv/internal/sys"
 )
 
@@ -25,6 +26,14 @@ func main() {
 
 	database := db.NewPostgresDb()
 	err = database.InitializePostgres(args.PostgresConnStr())
+	if err != nil {
+		os.Exit(1)
+	}
+
+	server := rest.NewRestServer(database)
+	server.Initialize(":4817")
+
+	server.Listen()
 
 	database.Destroy()
 	fmt.Println("Info: Actify Main Server finish..")

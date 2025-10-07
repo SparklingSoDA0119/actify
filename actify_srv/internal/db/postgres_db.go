@@ -14,7 +14,7 @@ type PostgresDB struct {
 
 
 func NewPostgresDb() *PostgresDB {
-	return &PostgresDB{}
+	return &PostgresDB{isConnected: false}
 }
 
 func (db *PostgresDB) InitializePostgres(connStr string) error {
