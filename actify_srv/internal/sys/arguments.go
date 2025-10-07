@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 )
@@ -14,6 +15,7 @@ type Arguments struct {
 	SSLMode  bool
 	HelpReq  bool
 }
+
 
 func NewActifyArgs() Arguments {
 	return Arguments{
@@ -50,6 +52,7 @@ func (args *Arguments) Parse(input []string) error {
 	fs.StringVar(&args.DBName, "db_name", "postgres", "Database name")
 	fs.BoolVar(&args.SSLMode, "db_ssl", false, "database use ssl check")
 	fs.StringVar(&args.Password, "db_pw", "", "Database connection password")
+	fs.StringVar(&args.User, "db_user", "", "Database connection user ID")
 
 	fs.Usage = func() {
 		fmt.Println("Custom Usage:")
@@ -64,11 +67,15 @@ func (args *Arguments) Parse(input []string) error {
 
 	if args.HelpReq {
 		fs.Usage()
-		return nil
+		return errors.New("need help")
 	}
 
+	//fmt.Println("DbName: ", args.DBName)
+	//fmt.Println("Password: ", args.Password)
+	//fmt.Println("User: ", args.User)
+	
 	if args.DBName == "" || args.Password == "" || args.User == "" {
-		return nil
+		return errors.New("argument vaule (DBName, Password, User) can not empty")
 	}
 
 	return nil
