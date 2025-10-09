@@ -8,7 +8,7 @@ import (
 )
 
 type PostgresDB struct {
-	pDb  *sql.DB
+	DB  *sql.DB
 	isConnected bool
 }
 
@@ -19,7 +19,7 @@ const USER_TABLE_CREATE_QUERY = `
 		email 			TEXT UNIQUE NOT NULL,
 		phone_number 	VARCHAR(20) UNIQUE,
     	phone_verified 	BOOLEAN DEFAULT FALSE,
-		passowrd 		TEXT NOT NULL,
+		password 		TEXT NOT NULL,
 		birthdate 		DATE,
 		gender 			INTEGER DEFAULT 0,
 		profile_url 	TEXT,
@@ -108,7 +108,7 @@ func (db *PostgresDB) InitializePostgres(connStr string) error {
 		return fmt.Errorf("database connection error(err: %v)", err)
 	}
 
-	db.pDb = pDb
+	db.DB = pDb
 
 	err = db.checkTable()
 	if err != nil {
@@ -138,18 +138,18 @@ func connectPostgres(connStr string) (*sql.DB, error) {
 
 
 func (pDb *PostgresDB) Destroy() {
-	defer pDb.pDb.Close()
+	defer pDb.DB.Close()
 	pDb.isConnected = false
 }
 
 
 func (pDb *PostgresDB) checkTable() error {
-	runQuery(pDb.pDb, USER_TABLE_CREATE_QUERY)
-	runQuery(pDb.pDb, API_KEY_TABLE_CREATE_QUERY)
-	runQuery(pDb.pDb, USER_CONSENTS_CREATE_QUERY)
-	runQuery(pDb.pDb, GROUP_TABLE_CREATE_QUERY)
-	runQuery(pDb.pDb, GROUP_MEMBER_TABLE_CREATE_QUERY)
-	runQuery(pDb.pDb, GROUP_NOTICE_TABLE_CREATE_QUERY)
+	runQuery(pDb.DB, USER_TABLE_CREATE_QUERY)
+	runQuery(pDb.DB, API_KEY_TABLE_CREATE_QUERY)
+	runQuery(pDb.DB, USER_CONSENTS_CREATE_QUERY)
+	runQuery(pDb.DB, GROUP_TABLE_CREATE_QUERY)
+	runQuery(pDb.DB, GROUP_MEMBER_TABLE_CREATE_QUERY)
+	runQuery(pDb.DB, GROUP_NOTICE_TABLE_CREATE_QUERY)
 	return nil
 }
 
@@ -161,6 +161,6 @@ func runQuery(pDb *sql.DB, query string) error {
 		return err
 	}
 
-	fmt.Printf("Info: query success.(query: %v)\n", query)
+	fmt.Printf("Info: query success.\n")
 	return nil
 }
